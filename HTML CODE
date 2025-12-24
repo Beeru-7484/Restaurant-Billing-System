@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hotel Booking Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        button {
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        .room {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #333;
+            display: inline-block;
+            width: 120px;
+            text-align: center;
+        }
+        .available {
+            background-color: #b6fcb6;
+        }
+        .booked {
+            background-color: #fcb6b6;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Hotel Booking Management System</h1>
+
+<button onclick="showRooms()">View Rooms</button>
+<button onclick="bookRoom()">Book Room</button>
+<button onclick="cancelRoom()">Cancel Booking</button>
+
+<div id="rooms"></div>
+
+<script>
+    const TOTAL_ROOMS = 10;
+
+    // Load or initialize rooms
+    let rooms = JSON.parse(localStorage.getItem("rooms"));
+    if (!rooms) {
+        rooms = Array(TOTAL_ROOMS).fill(true);
+        localStorage.setItem("rooms", JSON.stringify(rooms));
+    }
+
+    function saveRooms() {
+        localStorage.setItem("rooms", JSON.stringify(rooms));
+    }
+
+    function showRooms() {
+        const roomDiv = document.getElementById("rooms");
+        roomDiv.innerHTML = "";
+
+        for (let i = 0; i < TOTAL_ROOMS; i++) {
+            let div = document.createElement("div");
+            div.className = "room " + (rooms[i] ? "available" : "booked");
+            div.innerHTML = `Room ${i + 1}<br>` + (rooms[i] ? "Available" : "Booked");
+            roomDiv.appendChild(div);
+        }
+    }
+
+    function bookRoom() {
+        let room = prompt("Enter room number to book:");
+        room = parseInt(room);
+
+        if (room < 1 || room > TOTAL_ROOMS) {
+            alert("Invalid room number");
+        } else if (!rooms[room - 1]) {
+            alert("Room already booked");
+        } else {
+            rooms[room - 1] = false;
+            saveRooms();
+            alert("Room booked successfully!");
+            showRooms();
+        }
+    }
+
+    function cancelRoom() {
+        let room = prompt("Enter room number to cancel:");
+        room = parseInt(room);
+
+        if (room < 1 || room > TOTAL_ROOMS) {
+            alert("Invalid room number");
+        } else if (rooms[room - 1]) {
+            alert("Room is not booked");
+        } else {
+            rooms[room - 1] = true;
+            saveRooms();
+            alert("Booking cancelled!");
+            showRooms();
+        }
+    }
+
+    showRooms();
+</script>
+
+</body>
+</html>
